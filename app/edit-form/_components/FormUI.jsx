@@ -63,7 +63,7 @@ const FormUI = ({jsonForm,onFieldUpdate,selectedTheme,deleteField,editable=true,
  }
  const handleCheckboxChange=(fieldName,itemName,value)=>{
     console.log(fieldName,itemName,value);
-    const list=formData?.[fieldName]?formData?.[fieldName]:[];
+    const list=(formData?.[fieldName])?formData?.[fieldName]:[];
     if(value){
       list.push({
         label:itemName,
@@ -86,7 +86,7 @@ const FormUI = ({jsonForm,onFieldUpdate,selectedTheme,deleteField,editable=true,
     <form ref={(e)=>formRef=e} onSubmit={onFormSubmit} className='border p-5 md:w-[800px] rounded-xl ' data-theme={selectedTheme}>
       <h2 className='font-extrabold text-purple-900 text-center text-2xl'>{jsonForm?.formTitle}</h2>
       <h2 className='text-sm my-2 text-pink-900 font-serif text-center'>{(jsonForm?.formSubheading||jsonForm?.formSubHeading)}</h2>
-      {(jsonForm?.form || jsonForm?.formFields)?.map((field,index)=>(
+      {jsonForm?.form?(jsonForm?.form) : (jsonForm?.formFields)?.map((field,index)=>(
         <div key={index} className='my-6 flex items-center text-purple-800'>
           {field.fieldType=='select'?
             <div className='my-3 shadow-xl w-full'>
@@ -132,8 +132,8 @@ const FormUI = ({jsonForm,onFieldUpdate,selectedTheme,deleteField,editable=true,
           :
           <div className='w-full my-3 shadow-xl items-center'>
           <label className='text-xs font-bold text-pink-800'>{field?.formLabel||field?.fieldLabel}...</label>
-          <Input onChange={(e)=>handleInputChange(e)} className='bg-transparent' type={field?.fieldType} 
-          placeholder={field?.placeholderName||field?.placeholder} name={field?.fieldName} 
+          <Input onChange={(e)=>handleInputChange(e)} className='bg-transparent' type={field?.fieldType||field?.formType} 
+          placeholder={field?.placeholderName||field?.placeholder} name={field?.fieldName||field?.formName} 
           required={(field?.fieldRequired)?(field?.fieldRequired):(field?.isRequired)}/>
           </div>}
           {editable&&<div>   
@@ -144,7 +144,7 @@ const FormUI = ({jsonForm,onFieldUpdate,selectedTheme,deleteField,editable=true,
       {!enabledSignIn?
       (<button type='submit' className='btn btn-primary'>Submit..</button>):
       (isSignedIn?
-      (<button type='submit' className='btn btn-primary'>Submit..</button>):(<SignInButton onSuccess={handleSignInSuccess} mode='modal'>SignIn to Submit</SignInButton>))}
+      (<button type='submit' className='btn btn-primary'>Submit..</button>):(<Button><SignInButton onSuccess={handleSignInSuccess} mode='modal'>SignIn to Submit</SignInButton></Button>))}
     </form>
   )
 }
